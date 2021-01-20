@@ -13,16 +13,14 @@
 #include "screen.h"
 class CSnake:public CFramedWindow
 {
-    enum Mode { RUN = 0, PAUSE, DEATH};
-    Mode gameMode;
+    enum State { RUN = 0, PAUSE, DEATH};
+    State gameState;
     typedef CPoint Vector;
     unsigned long speed = 150000, score = 0;
-
     void accelerate(){
         if(score % 30 == 0 && score > 50000)
             speed -= 25000;
     }
-
     static Vector getDirection(const int& direction) {
         switch(direction){
             case KEY_UP:
@@ -37,7 +35,6 @@ class CSnake:public CFramedWindow
                 return {0, 0};
         }
     }
-
 private:
     std::vector<CPoint> body;   //snake segments
     Vector c_dir;               //current direction of head

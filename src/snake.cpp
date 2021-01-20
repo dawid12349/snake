@@ -9,7 +9,7 @@ void CSnake::paint() {
     CFramedWindow::paint();
     gotoyx(geom.topleft.y - 1, geom.topleft.x + (geom.size.x / 2) - 3);
     printl("SCORE : %d", score);
-    if(gameMode != DEATH) {
+    if(gameState != DEATH) {
         gotoyx(geom.topleft.y + food.y, geom.topleft.x + food.x);
         printl("%c", 'F');
         gotoyx(geom.topleft.y + Head().y, geom.topleft.x + Head().x);
@@ -19,13 +19,13 @@ void CSnake::paint() {
             printl("%c", '*');
         }
     }
-    if(gameMode == DEATH){
+    if(gameState == DEATH){
         gotoyx(geom.topleft.y + 2,  geom.topleft.x + 5);
         printl("GAME OVER!");
         gotoyx(geom.topleft.y + 3,  geom.topleft.x + 5);
         printl("Press r/R to restart the game!");
     }
-    if(gameMode == PAUSE) {
+    if(gameState == PAUSE) {
         gotoyx(geom.topleft.y + 2, geom.topleft.x + 5);
         printl("P/p - start/pause");
         gotoyx(geom.topleft.y + 3, geom.topleft.x + 5);
@@ -38,11 +38,11 @@ void CSnake::paint() {
 bool CSnake::handleEvent(int key) {
     fflush(stdin);
     if((key == 'p' || key == 'P')){
-        if(gameMode != DEATH){
-            if(gameMode == PAUSE)
-                gameMode = RUN;
-            else if (gameMode == RUN)
-                gameMode = PAUSE;
+        if(gameState != DEATH){
+            if(gameState == PAUSE)
+                gameState = RUN;
+            else if (gameState == RUN)
+                gameState = PAUSE;
         }
         return true;
     }
@@ -51,15 +51,16 @@ bool CSnake::handleEvent(int key) {
         sleep(1);
         return true;
     }
-    if(gameMode==RUN){
+    if(gameState==RUN){
         update(key);
-        if(gameMode == DEATH){
+        usleep(speed);
+        if(gameState == DEATH){
             paint();
             return false;
         }
         return true;
     }
-    if(gameMode != RUN && CFramedWindow::handleEvent(key)){
+    if(gameState != RUN && CFramedWindow::handleEvent(key)){
         return true;
     }
     return false;
@@ -73,7 +74,7 @@ void CSnake::init() {
     body.emplace_back(CPoint{geom.size.x / 2, (geom.size.y / 2) + 2});
     c_dir = getDirection(KEY_UP);
     generateFood();
-    gameMode = PAUSE;
+    gameState = PAUSE;
     score = 0;
     speed = 150000;
 }
@@ -90,8 +91,7 @@ void CSnake::update(const int& key){
     Move();
     keepInBounds();
     if(checkLose())
-        gameMode = DEATH;
-    usleep(speed);
+        gameState = DEATH;
 }
 
 void CSnake::Move() {
