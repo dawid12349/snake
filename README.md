@@ -1,7 +1,7 @@
 # snake
-<h3<A snake game made by using ncurses libarary.</h3>
+<h3>A snake game made by using ncurses libarary.</h3>
 
-<b>instructions:</b.
+<b>instructions:</b>
 execute "./winsys" command in console to run the game
 
 makefile commands:
